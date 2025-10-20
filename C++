@@ -1,0 +1,76 @@
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <algorithm>
+
+// Represents a local feature or point of interest
+struct Feature {
+    std::string name;
+    std::string type;
+    std::string description;
+};
+
+// Manages information about Keshod
+class KeshodInfoSystem {
+private:
+    std::unordered_map<std::string, std::string> town_facts;
+    std::vector<Feature> points_of_interest;
+
+public:
+    KeshodInfoSystem() {
+        town_facts["Location"] = "Junagadh District, Gujarat, India";
+        town_facts["Primary Role"] = "Agricultural and trade hub";
+        town_facts["Transportation"] = "Home to Keshod Airport (IXK) and a railway station.";
+
+        points_of_interest.push_back({"Keshod Airport (IXK)", "Transportation Hub", "Serves domestic flights, connecting the region to major cities."});
+        points_of_interest.push_back({"Agricultural Markets", "Economic Center", "Central marketplace for crops like groundnut and cotton."});
+        points_of_interest.push_back({"Local Temples", "Religious Sites", "Features several small temples, reflecting the local religious culture."});
+    }
+
+    void get_town_fact(const std::string& fact_name) const {
+        if (town_facts.count(fact_name)) {
+            std::cout << fact_name << ": " << town_facts.at(fact_name) << std::endl;
+        } else {
+            std::cout << "Fact not found: " << fact_name << std::endl;
+        }
+    }
+    
+    void search_features(const std::string& search_term) const {
+        std::cout << "\n--- Search Results for '" << search_term << "' ---" << std::endl;
+        bool found = false;
+        std::string lower_search_term = search_term;
+        std::transform(lower_search_term.begin(), lower_search_term.end(), lower_search_term.begin(), ::tolower);
+
+        for (const auto& feature : points_of_interest) {
+            std::string lower_name = feature.name;
+            std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+            
+            if (lower_name.find(lower_search_term) != std::string::npos || 
+                feature.type.find(search_term) != std::string::npos) {
+                std::cout << "Name: " << feature.name << std::endl;
+                std::cout << "Type: " << feature.type << std::endl;
+                std::cout << "Description: " << feature.description << std::endl;
+                std::cout << "----------------------------------------" << std::endl;
+                found = true;
+            }
+        }
+        if (!found) {
+            std::cout << "No matching features found." << std::endl;
+        }
+    }
+};
+
+int main() {
+    KeshodInfoSystem info_system;
+    
+    // Display general facts
+    info_system.get_town_fact("Location");
+    info_system.get_town_fact("Transportation");
+
+    // Search for features
+    info_system.search_features("Airport");
+    info_system.search_features("Center");
+
+    return 0;
+}
